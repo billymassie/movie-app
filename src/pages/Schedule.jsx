@@ -5,7 +5,6 @@ import { useSearch } from '../context/SearchContext';
 
 function Schedule() {
   const [data, setData] = useState([]);
-  const [movies, setMovies] = useState([]);
   const { searchValue } = useSearch();
 
   const fetchData = () => {
@@ -15,13 +14,13 @@ function Schedule() {
       .catch((e) => console.log(e.message));
   };
 
+  const filteredMovies = data.filter((item) => {
+    return item.title.toLowerCase().includes(searchValue.toLowerCase());
+  });
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    setMovies(data);
-  }, [data]);
 
   return (
     <section id='schedule' className='schedule'>
@@ -31,17 +30,12 @@ function Schedule() {
         </div>
         <div className='row'>
           <div className='row mt-5'>
-            {searchValue &&
-              movies
-                .filter((item) => item.title === searchValue)
-                .map((movie) => <Card key={movie._id} movie={movie} />)}
+            {data &&
+              data.length > 0 &&
+              filteredMovies.map((movie) => (
+                <Card key={movie._id} movie={movie} />
+              ))}
           </div>
-        </div>
-
-        <div className='row mt-5'>
-          {movies &&
-            movies.length > 0 &&
-            movies.map((movie) => <Card key={movie._id} movie={movie} />)}
         </div>
       </div>
     </section>
@@ -49,5 +43,3 @@ function Schedule() {
 }
 
 export default Schedule;
-
-// .filter((item) => item.title === searchValue)
